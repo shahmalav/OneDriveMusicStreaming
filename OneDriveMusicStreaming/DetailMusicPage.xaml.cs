@@ -1,4 +1,5 @@
-﻿using OneDriveMusicStreaming.Common;
+﻿using Newtonsoft.Json;
+using OneDriveMusicStreaming.Common;
 using OneDriveMusicStreaming.DataModel;
 using System;
 using System.Collections.Generic;
@@ -7,10 +8,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media;
 using Windows.Media.Playback;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -177,19 +180,36 @@ namespace OneDriveMusicStreaming
         {
 
             var playlistGroups = await PlaylistDataSource.GetGroupsAsync();
-            var firstGroup = playlistGroups.ToList<PlaylistDataGroup>().FirstOrDefault<PlaylistDataGroup>();
+            var firstGroup = playlistGroups.ToList<MusicDataGroup>().FirstOrDefault<MusicDataGroup>();
             var firstGroupItems = firstGroup.Items;
 
             //get current item details
-            PlaylistDataItem favItem = (PlaylistDataItem)itemListView.SelectedItem;
+            MusicDataItem favItem = (MusicDataItem)itemListView.SelectedItem;
+
+            //return if the item already exist in playlist
+            if (firstGroup.Items.Contains(favItem))
+                return;
 
             firstGroupItems.Add(favItem);
-            Debug.WriteLine(firstGroup.Title);
-           
 
+            var json = await Task.Factory.StartNew(() => JsonConvert.SerializeObject(firstGroup));
+
+            Debug.WriteLine(json);
+
+            try
+            {
+                string filename = "ms-appx:///DataModel/playlist.txt";
+                Uri appUri = new Uri(filename);//File name should be prefixed with 'ms-appx:///Assets/* 
+                StorageFile anjFile = await StorageFile.GetFileFromApplicationUriAsync(appUri);
+                await FileIO.WriteTextAsync(anjFile, json);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
 
-        
+
 
         void GoBack()
         {

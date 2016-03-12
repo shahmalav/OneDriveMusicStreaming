@@ -1,12 +1,15 @@
-﻿using OneDriveMusicStreaming.Common;
+﻿using Newtonsoft.Json;
+using OneDriveMusicStreaming.Common;
 using OneDriveMusicStreaming.DataModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -39,6 +42,28 @@ namespace OneDriveMusicStreaming.PlaylistViews
         public PlaylistMainPage()
         {
             this.InitializeComponent();
+
+            CreatePlaylist();
+        }
+
+        private async void CreatePlaylist()
+        {
+            //get local folder
+            StorageFolder local = ApplicationData.Current.LocalFolder;
+            //try to get the playlist file 
+            var lFile = local.TryGetItemAsync("playlist.txt");
+            if(lFile == null) // if not available create one
+            {
+                StorageFile newFile = await local.CreateFileAsync("playlist.txt");
+                MusicDataGroup defaultGroup = new MusicDataGroup("MyFavorite", "My Playlist", "Personal Fav", "", "Collection of My Favorite Songs");
+                var json = await Task.Factory.StartNew(() => JsonConvert.SerializeObject(defaultGroup));
+                var x =  FileIO.WriteTextAsync(newFile, json);
+                return;
+            }
+            else 
+            {
+                return;
+            }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -57,7 +82,7 @@ namespace OneDriveMusicStreaming.PlaylistViews
 
         private void itemGridView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            var groupId = ((PlaylistDataGroup)e.ClickedItem).UniqueId;
+            var groupId = ((MusicDataGroup)e.ClickedItem).UniqueId;
             this.Frame.Navigate(typeof(PlaylistDetailsPage), groupId);
         }
 

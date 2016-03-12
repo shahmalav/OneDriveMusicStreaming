@@ -7,31 +7,7 @@
       "ImagePath": "http://shahmalav.com/api/test.jpg",
       "Description": "",
       "Items": [
-        {
-          "UniqueId": "http://76.228.72.40/Al Green\\Gets Next To You\\01 I Cant Get Next To You.m4a",
-          "Title": "I Can't Get Next To You",
-          "Subtitle": "R&B",
-          "ImagePath": "http://shahmalav.com/api/test.jpg",
-          "Description": "",
-          "Content": "http://76.228.72.40/Al Green\\Gets Next To You\\01 I Cant Get Next To You.m4a"
-        }
-      ]
-    },
-    {
-      "UniqueId": "I'm Still in Love With You",
-      "Title": "I'm Still in Love With You",
-      "Subtitle": "Al Green",
-      "ImagePath": "http://shahmalav.com/api/test.jpg",
-      "Description": "",
-      "Items": [
-        {
-          "UniqueId": "http://76.228.72.40/Al Green\\I m Still in Love With You\\01 I m Still In Love With You.m4a",
-          "Title": "I'm Still In Love With You",
-          "Subtitle": "R&B",
-          "ImagePath": "http://shahmalav.com/api/test.jpg",
-          "Description": "",
-          "Content": "http://76.228.72.40/Al Green\\I m Still in Love With You\\01 I m Still In Love With You.m4a"
-        }
+       
       ]
     }
   ]

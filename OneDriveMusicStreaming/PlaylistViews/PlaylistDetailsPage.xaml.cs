@@ -72,7 +72,7 @@ namespace OneDriveMusicStreaming.PlaylistViews
             get { return this.defaultViewModel; }
         }
 
-        PlaylistDataGroup group;
+        MusicDataGroup group;
 
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
