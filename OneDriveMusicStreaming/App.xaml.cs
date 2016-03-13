@@ -1,12 +1,17 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using OneDriveMusicStreaming.DataModel;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -40,7 +45,7 @@ namespace OneDriveMusicStreaming
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected async override void OnLaunched(LaunchActivatedEventArgs e)
         {
 
 #if DEBUG
@@ -49,6 +54,18 @@ namespace OneDriveMusicStreaming
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
+
+
+            if (await isPlaylistCreated())
+            {
+                //success
+            }
+            else
+            {
+                CreatePlaylist();
+            }
+
+
 
             Frame rootFrame = Window.Current.Content as Frame;
 
@@ -79,6 +96,33 @@ namespace OneDriveMusicStreaming
             }
             // Ensure the current window is active
             Window.Current.Activate();
+        }
+
+        private async void CreatePlaylist()
+        {
+            StorageFolder sFolder = ApplicationData.Current.LocalFolder;
+            var file = await sFolder.CreateFileAsync("Playlist.txt", CreationCollisionOption.ReplaceExisting);
+            MusicDataGroup defaultGroup = new MusicDataGroup("MyFavorite", "My Playlist", "Personal Fav", "", "Collection of My Favorite Songs");
+            MusicDataSource defaultGroups = new MusicDataSource();
+            ObservableCollection<MusicDataGroup> defaultGroupCollection = new ObservableCollection<MusicDataGroup>();
+            defaultGroupCollection.Add(defaultGroup);
+            defaultGroups.Groups.Add(defaultGroup); // = defaultGroupCollection;
+            var json = await Task.Factory.StartNew(() => JsonConvert.SerializeObject(defaultGroups));
+            await FileIO.WriteTextAsync(file, json);
+            
+        }
+
+        private  async Task<bool> isPlaylistCreated()
+        {
+            try {
+                StorageFolder sFolder = ApplicationData.Current.LocalFolder;
+                var file = await sFolder.GetFileAsync("Playlist.txt");
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
+            
         }
 
         /// <summary>

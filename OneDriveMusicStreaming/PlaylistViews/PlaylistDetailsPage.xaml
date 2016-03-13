@@ -203,7 +203,7 @@
                 <AppBarButton Icon="Previous" x:Name="PrevButton" Label="Previous" Click="PrevButton_Click"></AppBarButton>
                 <AppBarButton Icon="Play" x:Name="PlayButton" Label="Play" Click="PlayButton_Click" ></AppBarButton>
                 <AppBarButton Icon="Next" x:Name="NextButton" Label="Next" Click="NextButton_Click" ></AppBarButton>
-                <AppBarButton Icon="Favorite" x:Name="FavButton" Label="Fav" Click="FavButton_Click" ></AppBarButton>
+          <!--      <AppBarButton Icon="Favorite" x:Name="FavButton" Label="Fav" Click="FavButton_Click" ></AppBarButton>  -->
                 <TextBlock x:Name="audioTimeline" VerticalAlignment="Center" Width="100" Text="" Style="{StaticResource SubheaderTextBlockStyle}" />
             </StackPanel>
         </AppBar>

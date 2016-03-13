@@ -42,30 +42,9 @@ namespace OneDriveMusicStreaming.PlaylistViews
         public PlaylistMainPage()
         {
             this.InitializeComponent();
-
-            CreatePlaylist();
+           
         }
-
-        private async void CreatePlaylist()
-        {
-            //get local folder
-            StorageFolder local = ApplicationData.Current.LocalFolder;
-            //try to get the playlist file 
-            var lFile = local.TryGetItemAsync("playlist.txt");
-            if(lFile == null) // if not available create one
-            {
-                StorageFile newFile = await local.CreateFileAsync("playlist.txt");
-                MusicDataGroup defaultGroup = new MusicDataGroup("MyFavorite", "My Playlist", "Personal Fav", "", "Collection of My Favorite Songs");
-                var json = await Task.Factory.StartNew(() => JsonConvert.SerializeObject(defaultGroup));
-                var x =  FileIO.WriteTextAsync(newFile, json);
-                return;
-            }
-            else 
-            {
-                return;
-            }
-        }
-
+        
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             getData();

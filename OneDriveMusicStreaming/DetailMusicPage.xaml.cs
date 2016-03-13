@@ -191,17 +191,18 @@ namespace OneDriveMusicStreaming
                 return;
 
             firstGroupItems.Add(favItem);
+            MusicDataSource defaultGroups = new MusicDataSource();
+            defaultGroups.Groups.Add(firstGroup); // = defaultGroupCollection;
 
-            var json = await Task.Factory.StartNew(() => JsonConvert.SerializeObject(firstGroup));
+            var json = await Task.Factory.StartNew(() => JsonConvert.SerializeObject(defaultGroups));
 
             Debug.WriteLine(json);
 
             try
             {
-                string filename = "ms-appx:///DataModel/playlist.txt";
-                Uri appUri = new Uri(filename);//File name should be prefixed with 'ms-appx:///Assets/* 
-                StorageFile anjFile = await StorageFile.GetFileFromApplicationUriAsync(appUri);
-                await FileIO.WriteTextAsync(anjFile, json);
+                StorageFolder sFolder = ApplicationData.Current.LocalFolder;
+                var file = await sFolder.GetFileAsync("Playlist.txt");
+                await FileIO.WriteTextAsync(file, json);
             }
             catch (Exception ex)
             {

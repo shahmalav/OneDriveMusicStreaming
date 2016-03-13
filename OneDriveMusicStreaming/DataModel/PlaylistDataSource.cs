@@ -64,13 +64,9 @@ namespace OneDriveMusicStreaming.DataModel
             string jsonText = "";
             try
             {
-                string filename = "ms-appx:///DataModel/playlist.txt";
-
-                Uri appUri = new Uri(filename);//File name should be prefixed with 'ms-appx:///Assets/* 
-
-             //   StorageFile anjFile = StorageFile.GetFileFromApplicationUriAsync(appUri).AsTask().ConfigureAwait(false).GetAwaiter().GetResult();
-                StorageFile anjFile = await StorageFile.GetFileFromApplicationUriAsync(appUri);
-                jsonText = FileIO.ReadTextAsync(anjFile).AsTask().ConfigureAwait(false).GetAwaiter().GetResult();
+                StorageFolder sFolder = ApplicationData.Current.LocalFolder;
+                var file = await sFolder.GetFileAsync("Playlist.txt");
+                jsonText = FileIO.ReadTextAsync(file).AsTask().ConfigureAwait(false).GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
