@@ -121,6 +121,7 @@ namespace OneDriveMusicStreaming.DataModel
         {
 
             string[] scopes = new string[] { "wl.signin", "wl.offline_access", "onedrive.readwrite" };
+            string imgUrl = "";
             ODClient = OneDriveClientExtensions.GetUniversalClient(scopes, null, null);
             var auth = await ODClient.AuthenticateAsync();
 
@@ -150,11 +151,26 @@ namespace OneDriveMusicStreaming.DataModel
                           .GetAsync();
 
 
+                    try
+                    {
+                        if (items.Count > 0)
+                        {
+                            imgUrl = items[0].Thumbnails[0].Large.Url;
+                        }
+                        else
+                        {
+                            imgUrl = "";
+                        }
+                    }catch(Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                        imgUrl = "";
+                    }
 
                     MusicDataGroup group = new MusicDataGroup(i.Id,
                                                             items.Count > 0 ? items[0].Audio.Album : i.Name,
-                                                            items.Count > 0 ? items[0].Audio.Genre : "",
-                                                            items.Count > 0 ? items[0].Thumbnails[0].Large.Url : "",
+                                                            items.Count > 0 ? items[0].Audio.Genre : "", 
+                                                            imgUrl,
                                                             "");
 
                     foreach (var item in items)
@@ -165,13 +181,25 @@ namespace OneDriveMusicStreaming.DataModel
 
                         string[] extension = item.Name.Split('.');
 
-
-                        group.Items.Add(new MusicDataItem(item.Id,
-                                                               item.Audio.Title == "" ? "Audio" : item.Audio.Title,
-                                                               item.Audio.Genre,
-                                                               item.Thumbnails[0].Large.Url,
-                                                               extension.LastOrDefault<string>(),
-                                                               urlDown.ToString()));
+                        try
+                        {
+                            group.Items.Add(new MusicDataItem(item.Id,
+                                                              item.Audio.Title == "" ? "Audio" : item.Audio.Title,
+                                                              item.Audio.Genre,
+                                                              item.Thumbnails[0].Large.Url,
+                                                              extension.LastOrDefault<string>(),
+                                                              urlDown.ToString()));
+                        }catch(ArgumentOutOfRangeException AOOREX)
+                        {
+                            Debug.WriteLine(AOOREX.Message);
+                            group.Items.Add(new MusicDataItem(item.Id,
+                                                              item.Audio.Title == "" ? "Audio" : item.Audio.Title,
+                                                              item.Audio.Genre,
+                                                              "",
+                                                              extension.LastOrDefault<string>(),
+                                                              urlDown.ToString()));
+                        }
+                       
                     }
 
                     this.Groups.Add(group);
